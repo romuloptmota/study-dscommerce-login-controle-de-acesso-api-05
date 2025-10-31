@@ -3,14 +3,13 @@ package com.devsuperior.dscommerce.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_user")
 public class User {
 
+    //ATRIBUTOS
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,9 +21,17 @@ public class User {
     private LocalDate birthDate;
     private String password;
 
+    //ATRIBUTOS RELACIONADOS
+    @ManyToMany
+    @JoinTable(name = "tb_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     @OneToMany(mappedBy = "client")
     private List<Order> orders = new ArrayList<>();
 
+    //CONSTRUTORES
     public User() {
     }
 
@@ -37,6 +44,23 @@ public class User {
         this.password = password;
     }
 
+    //MÉTODOS
+    //Adicionar role
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    //Testar se um usuário tem um role
+    public boolean hasRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getAuthority().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //GETTER E SETTER
     public Long getId() {
         return id;
     }
@@ -89,6 +113,11 @@ public class User {
         return orders;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    //HASHCODE
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
