@@ -1,6 +1,7 @@
 package com.devsuperior.dscommerce.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.devsuperior.dscommerce.entities.User;
 import com.devsuperior.dscommerce.projections.UserDetailsProjection;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	// VERIFICAR USUÁRIO AUTORIZAÇÃO / AUTENTICAÇÃO
 	@Query(nativeQuery = true, value = """
 				SELECT tb_user.email AS username, tb_user.password, tb_role.id AS roleId, tb_role.authority
 				FROM tb_user
@@ -20,4 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 				WHERE tb_user.email = :email
 			""")
 	List<UserDetailsProjection> searchUserAndRolesByEmail(String email);
+
+
+	// USUÁRIO LOGADO
+    Optional <User> findByEmail(String username);
 }
