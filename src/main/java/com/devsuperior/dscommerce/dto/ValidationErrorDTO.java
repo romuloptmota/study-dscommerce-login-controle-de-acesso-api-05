@@ -18,6 +18,8 @@ public class ValidationErrorDTO extends CustomErrorDTO {
     }
 
     public void addError(String fieldName, String message) {
+        //Remova de errors todos os objetos cujo campo fieldName é igual à variável fieldName passada como parâmetro
+        errors.removeIf(x -> x.getFieldName().equals(fieldName));
         errors.add(new FieldMessageDTO(fieldName, message));
     }
 }
